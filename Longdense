@@ -1,0 +1,97 @@
+import torch
+import torch.nn as nn
+#import torch.nn.functional as F
+import pandas as pd
+import os
+import sys
+import time
+#import visdom
+import argparse
+import numpy as np
+
+
+parser = argparse.ArgumentParser(description='dense')
+parser.add_argument('--num_epochs', type=int, default=60)
+
+
+args = parser.parse_args(args=[])
+
+class LongDense(nn.Module):
+    def __init__(self, in_channels=4):
+        super(Net, self).__init__()
+
+        # define the network structure
+        # current input 150*100
+        # batch normalization can be used if 
+        # number of (state, action, reward) tuple 
+        # is more than 10
+
+        # layers: 4*150*100 -> 32*29*24 -> 64*8*11 -> 64*7*10 -> 512 -> 8
+        # parameters: 32*4*10*8, 64*32*5*4, 64*64*2*2, 5120*512, 512*18
+
+        self.fc = nn.Sequential(
+            nn.linear(in_channels, 752),
+            nn.BatchNorm(752),
+            nn.ReLU(),
+            nn.linear(752, 576),
+            nn.BatchNorm(576),
+            nn.ReLU(),
+            nn.linear(576, 256),
+            nn.BatchNorm(256),
+            nn.ReLU(),
+            nn.linear(256, 192),
+            nn.BatchNorm(192),
+            nn.ReLU(),
+            nn.linear(192, 96),
+            nn.BatchNorm(96),
+            nn.ReLU(),
+            nn.linear(96, 3),
+            nn.BatchNorm(3),
+            nn.ReLU(),
+
+        )
+       
+    
+    def forward(self, x):
+        x = self.fc(x)
+        return x
+        
+def main():
+    #data=loaddata()
+    #num_epochs=args.num_epochs
+    longdense = LongDense()
+    longdense.train()
+    optimizer = torch.optim.Adam(self.net.parameters(), lr=self.lr, 
+            betas=(0.95, 0.95), eps=1e-2)
+    for i in range(args.num_epochs):
+        for j in range(args.num_batches):
+            start = time.time()
+            inputdata,labels =  ##need data
+            inputdata = inputdata.cuda()
+            labels = labels.cuda()
+            
+            optimizer.zero_grad()   # zero the gradient buffers
+            pred = longdense(inputdata)
+            loss = nn.CrossEntropyLoss()(pred, labels)
+            loss.backward()
+            optimizer.step()    # Does the update
+            train_acc = torch.mean((torch.max(pred, 1)[1] == labels).type(torch.float))
+            end = time.time()
+             
+            
+            
+            if (i) % args.log_every == 0:
+                learning_rate = shared_cnn_optimizer.param_groups[0]['lr']
+                display = 'epoch=' + str(i) + \
+                          'batch=' + str(j) + \
+                          '\tacc=%.4f' % (train_acc) + \
+                          '\ttime=%.2fit/s' % (1. / (end - start))
+                print(display)
+    longdense.eval()
+    images_val,labels+val
+    pred =longdense(images_val)
+    val_acc = torch.mean((torch.max(pred, 1)[1] == labels_val).type(torch.float))
+    print('val_acc=' + str(val_acc))
+    
+
+
